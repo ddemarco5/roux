@@ -47,6 +47,18 @@ impl User {
             client: Client::new(),
         }
     }
+    
+    /// Creat a new user instance using a provided user agent string
+    pub fn new_with_agent(user: &str, agent: &str) -> User {
+        println!("user agent is: {}", agent);
+        let client = reqwest::Client::builder()
+                        .user_agent(agent)
+                        .build().expect("Error building reqwest client");
+        User {
+            user: user.to_owned(),
+            client: client,
+        }
+    }
 
     /// Get user's overview.
     pub async fn overview(&self) -> Result<Overview, RouxError> {
