@@ -77,17 +77,32 @@ impl User {
     /// Get user's submitted posts.
     pub async fn submitted(&self) -> Result<Submissions, RouxError> {
         println!("client info\n{:?}", self.client.get("https://www.reddit.com/user/Hentoota-Kitty/submitted.json").header(reqwest::header::USER_AGENT, "test"));
+        let response = self
+            .client
+            .get(&format!(
+                "https://www.reddit.com/user/{}/submitted/.json",
+                self.user
+            ))
+            //.header(reqwest::header::USER_AGENT, "test")
+            .send()
+            .await?;
+
+        println!("Response status: {:?}", response.status());
+        println!("Reponse headers:\n{:?}", response.headers());
+        Ok(response.json::<Submissions>().await?)
+        /*
         Ok(self
             .client
             .get(&format!(
                 "https://www.reddit.com/user/{}/submitted/.json",
                 self.user
             ))
-            .header(reqwest::header::USER_AGENT, "test")
+            //.header(reqwest::header::USER_AGENT, "test")
             .send()
             .await?
             .json::<Submissions>()
             .await?)
+        */
     }
 
     /// Get user's submitted comments.
